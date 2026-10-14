@@ -25,3 +25,16 @@ main { width: min(100%, 460px); }
   .cell.sel { background: #3d6299; }
   .cell.bad { background: #4a1f1f; color: #ff7a7a; }
 }
+
+#top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+#top select, #top button { font-size: 16px; }
+#pause { border: 0; background: none; cursor: pointer; }
+#tools { display: flex; gap: 6px; margin-top: 12px; }
+#tools button { flex: 1; padding: 8px 0; }
+#actions { display: flex; gap: 6px; margin-top: 12px; }
+#actions button { flex: 1; }
+#grid.paused { filter: blur(10px); pointer-events: none; }
+.cell.hasnotes { display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); font-size: clamp(8px, 2vw, 11px); font-weight: 400; color: #666; }
+.cell.hasnotes i { font-style: normal; display: grid; place-items: center; }
+button:disabled { opacity: .35; }
+@media (prefers-color-scheme: dark) { .cell.hasnotes { color: #c8c8c8; } }

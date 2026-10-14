@@ -7,15 +7,26 @@
 </head>
 <body>
   <main>
+    <div id="top">
+      <select id="level" aria-label="Difficulty">
+        <option value="0">Easy</option><option value="1">Medium</option>
+        <option value="2">Hard</option><option value="3">Expert</option>
+      </select>
+      <span id="mistakes" aria-live="polite"></span>
+      <span id="clock"><span id="time">0:00</span> <button id="pause" aria-label="Pause">⏸</button></span>
+    </div>
     <div id="grid" role="grid" aria-label="Sudoku grid"></div>
+    <div id="tools">
+      <button id="undo">Undo</button>
+      <button id="redo">Redo</button>
+      <button id="erase">Erase</button>
+      <button id="notes" aria-pressed="false">Notes: off</button>
+      <button id="hint">Hint</button>
+    </div>
     <div id="pad"></div>
     <div id="actions">
-      <select id="level" aria-label="Difficulty"><option value="0">Easy</option><option value="1" selected>Medium</option><option value="2">Hard</option><option value="3">Expert</option></select>
       <button id="new">New game</button>
-      <button id="hint">Hint</button>
-      <button id="check">Check</button>
       <button id="solve">Solve</button>
-      <button id="reset">Reset</button>
     </div>
     <p id="msg" role="status"></p>
   </main>
