@@ -1,3 +1,4 @@
+:root { color-scheme: light dark; }
 body { font-family: system-ui, sans-serif; display: grid; place-items: center; margin: 0; padding: 16px; }
 main { width: min(100%, 460px); }
 #grid { display: grid; grid-template-columns: repeat(9, 1fr); border: 2px solid #222; aspect-ratio: 1; }
@@ -8,7 +9,7 @@ main { width: min(100%, 460px); }
 .cell.peer { background: #eef2f7; }
 .cell.same { background: #cfe0fa; }
 .cell.sel { background: #9ec1f5; }
-.cell.bad { color: #d00; background: #fdd; }
+.cell.bad { color: #b00; background: #fdd; }
 .cell:focus-visible { outline: 3px solid #f90; outline-offset: -3px; }
 #pad, #actions { display: flex; gap: 6px; margin-top: 12px; }
 #pad button, #actions button { flex: 1; padding: 10px 0; font-size: 18px; }

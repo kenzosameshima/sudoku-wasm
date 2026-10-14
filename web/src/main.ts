@@ -59,8 +59,6 @@ const newGame = () => {
 
 const cells = Array.from({ length: 81 }, (_, i) => {
   const b = document.createElement("button");
-  b.setAttribute("role", "gridcell");
-  b.setAttribute("aria-label", `Row ${(i / 9 | 0) + 1}, column ${(i % 9) + 1}`);
   b.onclick = () => ((sel = i), render());
   $("grid").append(b);
   return b;
@@ -84,6 +82,10 @@ function render() {
       (i === sel ? " sel" : sd && b === sd ? " same" : sees(i, sel) ? " peer" : "") +
       (b && !correct(i) ? " bad" : "") +
       (!b && n ? " hasnotes" : "");
+    const pos = `Row ${(i / 9 | 0) + 1}, column ${(i % 9) + 1}`;
+    const what = b ? `${b}${given(i) ? ", given" : b !== +g.solution[i] ? ", wrong" : ""}` : n ? `notes ${[1, 2, 3, 4, 5, 6, 7, 8, 9].filter((d) => n >> d & 1).join(" ")}` : "empty";
+    c.setAttribute("aria-label", `${pos}, ${what}`);
+    if (i === sel) c.setAttribute("aria-current", "true"); else c.removeAttribute("aria-current");
     if (b || !n) c.textContent = b ? String(b) : "";
     else c.innerHTML = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((d) => `<i>${n >> d & 1 ? d : ""}</i>`).join("");
   });
@@ -94,6 +96,7 @@ function render() {
   $("mistakes").textContent = `Mistakes: ${g.mistakes}`;
   $("time").textContent = fmt(g.elapsed);
   $("grid").classList.toggle("paused", paused);
+  ($("grid") as HTMLElement).inert = paused;
   $("pause").textContent = paused ? "▶" : "⏸";
   $("pause").setAttribute("aria-label", paused ? "Resume" : "Pause");
   $("notes").textContent = `Notes: ${notesMode ? "on" : "off"}`;

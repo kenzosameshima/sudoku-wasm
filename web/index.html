@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sudoku</title>
+  <meta name="description" content="Sudoku with a Rust/WebAssembly solver, generator and hints. Runs entirely in your browser." />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%231a56db%27/%3E%3Ctext x=%2716%27 y=%2724%27 font-size=%2722%27 font-family=%27sans-serif%27 font-weight=%27700%27 text-anchor=%27middle%27 fill=%27white%27%3E9%3C/text%3E%3C/svg%3E" />
 </head>
 <body>
   <main>
@@ -15,7 +18,7 @@
       <span id="mistakes" aria-live="polite"></span>
       <span id="clock"><span id="time">0:00</span> <button id="pause" aria-label="Pause">⏸</button></span>
     </div>
-    <div id="grid" role="grid" aria-label="Sudoku grid"></div>
+    <div id="grid" role="group" aria-label="Sudoku grid"></div>
     <div id="tools">
       <button id="undo">Undo</button>
       <button id="redo">Redo</button>
