@@ -33,7 +33,11 @@ impl Board {
         Some(b)
     }
 
-    fn place(&mut self, i: usize, d: u8) {
+    pub(crate) fn cells(&self) -> &[u8; 81] {
+        &self.cells
+    }
+
+    pub(crate) fn place(&mut self, i: usize, d: u8) {
         let bit = 1u16 << d;
         self.cells[i] = d;
         self.rows[i / 9] |= bit;
@@ -41,7 +45,7 @@ impl Board {
         self.boxes[box_of(i)] |= bit;
     }
 
-    fn unplace(&mut self, i: usize) {
+    pub(crate) fn unplace(&mut self, i: usize) {
         let bit = !(1u16 << self.cells[i]);
         self.cells[i] = 0;
         self.rows[i / 9] &= bit;
@@ -49,7 +53,7 @@ impl Board {
         self.boxes[box_of(i)] &= bit;
     }
 
-    fn candidates(&self, i: usize) -> u16 {
+    pub(crate) fn candidates(&self, i: usize) -> u16 {
         !(self.rows[i / 9] | self.cols[i % 9] | self.boxes[box_of(i)]) & 0x3FE
     }
 

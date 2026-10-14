@@ -1,13 +1,21 @@
-import init, { solve } from "../../core/pkg/sudoku_core.js";
+import init, { solve, generate } from "../../core/pkg/sudoku_core.js";
 import "./style.css";
 
-const PUZZLE = "530070000600195000098000060800060003400803001700020006060000280000419005000080079";
+let puzzle = "530070000600195000098000060800060003400803001700020006060000280000419005000080079";
 
 const $ = (id: string) => document.getElementById(id)!;
 const msg = (t: string) => ($("msg").textContent = t);
 
-const board = [...PUZZLE].map(Number); // 0 = empty
+const board = [...puzzle].map(Number); // 0 = empty
 const given = board.map((d) => d !== 0);
+
+function load(p: string) {
+  puzzle = p;
+  [...p].forEach((d, i) => ((board[i] = +d), (given[i] = d !== "0")));
+  sel = 0;
+  msg("");
+  render();
+}
 let sel = 0;
 
 const cells = Array.from({ length: 81 }, (_, i) => {
@@ -85,10 +93,9 @@ $("check").onclick = () => {
   msg(wrong ? "Some entries differ from the solution." : board.every(Boolean) ? "Correct!" : "So far so good.");
 };
 
-$("reset").onclick = () => {
-  [...PUZZLE].forEach((d, i) => (board[i] = +d));
-  msg("");
-  render();
-};
+$("reset").onclick = () => load(puzzle);
+
+$("new").onclick = () =>
+  load(generate(+($("level") as HTMLSelectElement).value, (Math.random() * 2 ** 32) >>> 0));
 
 render();
