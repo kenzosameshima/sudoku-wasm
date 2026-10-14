@@ -1,3 +1,4 @@
+use crate::rating::difficulty as rate;
 use crate::solver::{count_solutions, Board};
 
 /// xorshift64*, seeded through splitmix64 so small seeds still diverge.
@@ -40,36 +41,53 @@ fn fill(b: &mut Board, i: usize, rng: &mut Rng) -> bool {
     false
 }
 
-/// Clues to aim for: 0 easy, 1 medium, 2 hard, 3 expert (anything higher = expert).
-/// Targets are a floor on clues, not a rating; real difficulty comes with milestone 5.
-fn target_clues(difficulty: u8) -> usize {
-    [40, 34, 28, 24][difficulty.min(3) as usize]
+/// Clue count to reach before the rating is even considered.
+fn clue_floor(difficulty: u8) -> usize {
+    [40, 34, 28, 24][difficulty as usize]
 }
 
-/// Puzzle with a unique solution; same (difficulty, seed) gives the same puzzle.
-/// May keep more clues than the target if no further cell can be removed uniquely.
-pub fn generate(difficulty: u8, seed: u32) -> String {
-    let mut rng = Rng::new(seed);
+fn text(cells: &[u8]) -> String {
+    cells.iter().map(|d| (b'0' + d) as char).collect()
+}
+
+/// One fill + removal pass: stop at the first unique puzzle that is at or
+/// below the clue floor and at least as hard as asked.
+fn attempt(difficulty: u8, rng: &mut Rng) -> String {
     let mut b = Board::parse(&"0".repeat(81)).unwrap();
-    assert!(fill(&mut b, 0, &mut rng));
-    let mut cells = b.cells().to_vec();
+    assert!(fill(&mut b, 0, rng));
+    let mut cells = *b.cells();
     let mut order: Vec<usize> = (0..81).collect();
     rng.shuffle(&mut order);
     let mut clues = 81;
     for i in order {
-        if clues <= target_clues(difficulty) {
-            break;
-        }
         let d = cells[i];
         cells[i] = 0;
-        let s: String = cells.iter().map(|d| (b'0' + d) as char).collect();
-        if count_solutions(&s, 2) == 1 {
+        if count_solutions(&text(&cells), 2) == 1 {
             clues -= 1;
+            if clues <= clue_floor(difficulty) && rate(&text(&cells)) >= difficulty {
+                break;
+            }
         } else {
             cells[i] = d;
         }
     }
-    cells.iter().map(|d| (b'0' + d) as char).collect()
+    text(&cells)
+}
+
+/// Puzzle with a unique solution rated `difficulty` (0 easy .. 3 expert, higher = expert).
+/// Same (difficulty, seed) gives the same puzzle. Retries fresh grids until the rating
+/// matches; after 200 misses returns the last attempt (rating may differ).
+pub fn generate(difficulty: u8, seed: u32) -> String {
+    let difficulty = difficulty.min(3);
+    let mut rng = Rng::new(seed);
+    let mut p = attempt(difficulty, &mut rng);
+    for _ in 1..200 {
+        if rate(&p) == difficulty {
+            break;
+        }
+        p = attempt(difficulty, &mut rng);
+    }
+    p
 }
 
 #[cfg(test)]
@@ -78,12 +96,11 @@ mod tests {
     use crate::solver::is_valid;
 
     #[test]
-    fn unique_and_hits_target() {
-        for (diff, seed) in [(0, 1), (1, 2), (2, 3), (3, 4)] {
+    fn unique_and_rated_as_asked() {
+        for (diff, seed) in [(0, 1), (1, 2), (2, 3), (3, 4), (1, 5), (2, 6), (2, 4)] {
             let p = generate(diff, seed);
             assert!(is_valid(&p), "diff {diff} seed {seed}");
-            let clues = p.bytes().filter(|&c| c != b'0').count();
-            assert!(clues >= target_clues(diff) && clues <= target_clues(diff) + 3, "{clues} clues");
+            assert_eq!(rate(&p), diff, "diff {diff} seed {seed}");
         }
     }
 

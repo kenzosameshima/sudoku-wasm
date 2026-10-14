@@ -1,4 +1,4 @@
-import init, { solve, generate } from "../../core/pkg/sudoku_core.js";
+import init, { solve, generate, hint } from "../../core/pkg/sudoku_core.js";
 import "./style.css";
 
 let puzzle = "530070000600195000098000060800060003400803001700020006060000280000419005000080079";
@@ -94,6 +94,8 @@ $("check").onclick = () => {
 };
 
 $("reset").onclick = () => load(puzzle);
+
+$("hint").onclick = () => msg(hint(str()) || "No logical step found.");
 
 $("new").onclick = () =>
   load(generate(+($("level") as HTMLSelectElement).value, (Math.random() * 2 ** 32) >>> 0));

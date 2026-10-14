@@ -1,4 +1,5 @@
 mod generator;
+mod rating;
 mod solver;
 use wasm_bindgen::prelude::*;
 
@@ -21,4 +22,16 @@ pub fn count_solutions(puzzle: &str, limit: u32) -> u32 {
 #[wasm_bindgen]
 pub fn generate(difficulty: u8, seed: u32) -> String {
     generator::generate(difficulty, seed)
+}
+
+/// 0 easy .. 3 expert by the hardest human technique needed; 255 if not a unique puzzle.
+#[wasm_bindgen]
+pub fn rate(puzzle: &str) -> u8 {
+    rating::rate(puzzle)
+}
+
+/// Text describing the next logical step, or "" if none applies.
+#[wasm_bindgen]
+pub fn hint(puzzle: &str) -> String {
+    rating::hint(puzzle)
 }
