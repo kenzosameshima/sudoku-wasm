@@ -11,7 +11,7 @@ struct State {
 }
 
 fn rc(i: usize) -> String {
-    format!("r{}c{}", i / 9 + 1, i % 9 + 1)
+    format!("row {}, column {}", i / 9 + 1, i % 9 + 1)
 }
 
 fn unit_name(u: usize) -> String {
